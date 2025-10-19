@@ -9,6 +9,12 @@ body, html {
     overflow: hidden; /* Ẩn thanh cuộn */
     display: grid; /* Dùng grid để chồng các lớp */
     place-items: center; /* Căn giữa mọi thứ */
+    grid-template-areas: "stack"; /* Tạo một khu vực lưới duy nhất */
+}
+
+/* Áp dụng khu vực lưới cho cả canvas và text-container */
+#fireworksCanvas, .text-container {
+    grid-area: stack; /* Cả hai đều nằm trong khu vực "stack" để chồng lên nhau */
 }
 
 /* Canvas cho pháo hoa (nằm dưới) */
@@ -31,6 +37,7 @@ body, html {
     justify-content: center;
     align-items: center;
     perspective: 1000px; /* Tạo độ sâu 3D */
+    font-size: 1.2em; /* Tăng kích thước font chữ tổng thể */
 }
 
 .text-orbit {
@@ -60,7 +67,7 @@ body, html {
     left: 50%; /* Căn giữa */
     transform-origin: 0 0; /* Gốc xoay */
     color: #eee;
-    font-size: 1.1em;
+    font-size: 1em; /* Sẽ kế thừa 1.2em từ text-container */
     white-space: nowrap; /* Không xuống dòng */
     text-shadow: 0 0 4px #fff;
 }
