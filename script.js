@@ -4,25 +4,30 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let particles = [];
+let fireworkParticles = []; // Các hạt tạo nên quả pháo hoa trước khi nổ
 
-// Lớp Hạt (Particle)
+const colors = ['#FFC0CB', '#FF69B4', '#FF1493', '#DB7093', '#C71585']; // Các màu hồng/đỏ
+
+// Lớp Hạt (Particle) - dùng cho các tia lửa sau khi nổ
 class Particle {
-    constructor(x, y, color, velocity) {
+    constructor(x, y, radius, color, velocity) {
         this.x = x;
         this.y = y;
+        this.radius = radius;
         this.color = color;
         this.velocity = velocity;
-        this.alpha = 1; // Độ mờ
-        this.friction = 0.98; // Ma sát làm chậm lại
-        this.gravity = 0.05; // Trọng lực kéo xuống
+        this.alpha = 1;
+        this.friction = 0.99;
+        this.gravity = 0.05;
+        this.decay = Math.random() * 0.03 + 0.01; // Tốc độ mờ dần ngẫu nhiên
     }
 
     draw() {
         ctx.save();
         ctx.globalAlpha = this.alpha;
         ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         ctx.fillStyle = this.color;
-        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2, false);
         ctx.fill();
         ctx.restore();
     }
@@ -30,62 +35,131 @@ class Particle {
     update() {
         this.velocity.x *= this.friction;
         this.velocity.y *= this.friction;
-        this.velocity.y += this.gravity; // Hạt rơi xuống
+        this.velocity.y += this.gravity;
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.alpha -= 0.015; // Mờ dần
+        this.alpha -= this.decay; // Mờ dần theo decay
+        if (this.alpha <= 0) {
+            this.alpha = 0; // Đảm bảo không bị âm
+        }
         this.draw();
     }
 }
 
-// Hàm tạo vụ nổ hình trái tim
-function createHeartExplosion(x, y) {
-    const particleCount = 150; // Số lượng hạt
-    const power = 3; // Sức nổ
-    const color = 'hsl(0, 100%, 70%)'; // Màu đỏ hồng
+// Lớp Pháo hoa (FireworkParticle) - dùng cho "quả bom" bay lên
+class FireworkParticle {
+    constructor(startX, startY, endX, endY, color) {
+        this.x = startX;
+        this.y = startY;
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        this.color = color;
+        this.distance = Math.hypot(endX - startX, endY - startY);
+        this.currentDistance = 0;
+        this.velocity = { x: (endX - startX) / 60, y: (endY - startY) / 60 }; // Tốc độ di chuyển
+        this.alpha = 1;
+    }
 
-    for (let i = 0; i < particleCount; i++) {
-        // Công thức toán học của hình trái tim
-        const t = (Math.PI / (particleCount / 2)) * i;
-        const velX = power * 1.5 * Math.pow(Math.sin(t), 3);
-        const velY = power * -(1.3 * Math.cos(t) - 0.5 * Math.cos(2 * t) - 0.2 * Math.cos(3 * t) - 0.1 * Math.cos(4 * t));
-        
-        particles.push(new Particle(x, y, color, { x: velX, y: velY }));
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.currentDistance = Math.hypot(this.x - this.startX, this.y - this.startY);
+        this.alpha -= 0.02; // Mờ dần khi bay lên
+        this.draw();
     }
 }
 
-// Vòng lặp animation (vẽ liên tục)
+
+// Hàm tạo vụ nổ hình trái tim
+function createHeartExplosion(x, y, baseColor) {
+    const particleCount = 100; // Số lượng hạt nhỏ
+    const power = 3.5; // Sức nổ
+    
+    // Tạo 50% hạt màu chủ đạo, 50% hạt màu ngẫu nhiên khác
+    for (let i = 0; i < particleCount; i++) {
+        let color = Math.random() < 0.5 ? baseColor : colors[Math.floor(Math.random() * colors.length)];
+
+        // Công thức toán học của hình trái tim (lần này là phân tán, không phải đường viền)
+        // Điều chỉnh để hạt bay ra từ tâm
+        const t = (Math.PI * 2 / particleCount) * i;
+        
+        let velX = power * (16 * Math.pow(Math.sin(t), 3)) / 16;
+        let velY = power * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 16;
+        
+        // Đảo ngược trục Y để trái tim hướng lên
+        velY *= -1;
+
+        // Thêm một chút ngẫu nhiên để trông tự nhiên hơn
+        velX += (Math.random() - 0.5) * 1.5;
+        velY += (Math.random() - 0.5) * 1.5;
+
+        particles.push(new Particle(x, y, 2, color, { x: velX, y: velY }));
+    }
+}
+
+
+// Vòng lặp animation chính
 function animate() {
     requestAnimationFrame(animate);
-    // Tạo nền mờ dần (hiệu ứng vệt mờ)
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Hiệu ứng vệt mờ
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach((particle, index) => {
+    // Cập nhật và vẽ các hạt pháo hoa (sau khi nổ)
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
         if (particle.alpha > 0) {
             particle.update();
         } else {
-            particles.splice(index, 1); // Xóa hạt đã mờ
+            particles.splice(i, 1);
         }
-    });
+    }
+
+    // Cập nhật và vẽ các "quả bom" pháo hoa đang bay lên
+    for (let i = fireworkParticles.length - 1; i >= 0; i--) {
+        const fwParticle = fireworkParticles[i];
+        if (fwParticle.currentDistance >= fwParticle.distance || fwParticle.alpha <= 0) {
+            // Đến đích hoặc đã mờ, thì nổ
+            createHeartExplosion(fwParticle.endX, fwParticle.endY, fwParticle.color);
+            fireworkParticles.splice(i, 1);
+        } else {
+            fwParticle.update();
+        }
+    }
 }
 
-// Bắn một quả pháo hoa ở vị trí ngẫu nhiên
+// Hàm phóng một quả pháo hoa
 function launchFirework() {
-    const x = Math.random() * canvas.width;
-    // Bắn ở nửa trên màn hình
-    const y = (Math.random() * canvas.height / 2) + (canvas.height / 4); 
-    createHeartExplosion(x, y);
+    const startX = canvas.width / 2; // Bắt đầu từ giữa dưới
+    const startY = canvas.height;
+
+    // Vị trí nổ ngẫu nhiên ở phần trên màn hình
+    const endX = Math.random() * canvas.width * 0.6 + canvas.width * 0.2; // Từ 20% đến 80% chiều rộng
+    const endY = Math.random() * canvas.height * 0.4 + canvas.height * 0.1; // Từ 10% đến 50% chiều cao
+
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    fireworkParticles.push(new FireworkParticle(startX, startY, endX, endY, color));
 }
 
-// Bắn quả đầu tiên
+// Bắt đầu vòng lặp animation
+animate();
+
+// Phóng pháo hoa ban đầu
 launchFirework();
 
-// Bắn pháo hoa mới sau mỗi 3 giây
-setInterval(launchFirework, 3000);
-
-
-animate(); // Bắt đầu vòng lặp
+// Phóng pháo hoa mới sau mỗi 2-4 giây
+setInterval(launchFirework, Math.random() * 2000 + 2000); // Ngẫu nhiên từ 2 đến 4 giây
 
 // Xử lý khi thay đổi kích thước cửa sổ
 window.addEventListener('resize', () => {
