@@ -1,0 +1,100 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Ẩn thanh cuộn */
+    display: grid; /* Dùng grid để chồng các lớp */
+    place-items: center; /* Căn giữa mọi thứ */
+}
+
+/* Canvas cho pháo hoa (nằm dưới) */
+#fireworksCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; /* Lớp 1 */
+}
+
+/* Vùng chứa chữ (nằm trên) */
+.text-container {
+    position: relative;
+    z-index: 2; /* Lớp 2 */
+    width: 600px; /* Kích thước vùng xoay */
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px; /* Tạo độ sâu 3D */
+}
+
+.text-orbit {
+    position: absolute;
+    transform-style: preserve-3d; /* Giữ hiệu ứng 3D */
+    width: 100%;
+    height: 100%;
+    animation: spin 30s linear infinite; /* Animation xoay */
+}
+
+/* Vòng trong */
+.text-orbit.inner {
+     animation-duration: 25s; /* Xoay tốc độ khác */
+     animation-direction: reverse; /* Xoay ngược chiều */
+}
+
+/* Keyframes cho animation xoay */
+@keyframes spin {
+    from { transform: rotateX(75deg) rotateZ(0deg); } /* 75deg là độ nghiêng */
+    to   { transform: rotateX(75deg) rotateZ(360deg); }
+}
+
+/* Định dạng cho từng dòng chữ */
+.text-orbit span {
+    position: absolute;
+    top: 50%; /* Căn giữa */
+    left: 50%; /* Căn giữa */
+    transform-origin: 0 0; /* Gốc xoay */
+    color: #eee;
+    font-size: 1.1em;
+    white-space: nowrap; /* Không xuống dòng */
+    text-shadow: 0 0 4px #fff;
+}
+
+/* --- Vòng ngoài (outer orbit) --- */
+/* Bán kính 300px, 4 cụm từ (cách nhau 90deg) */
+.text-orbit.outer span:nth-child(1) { 
+    transform: rotate(0deg) translateX(300px) rotate(90deg); 
+}
+.text-orbit.outer span:nth-child(2) { 
+    transform: rotate(90deg) translateX(300px) rotate(90deg); 
+}
+.text-orbit.outer span:nth-child(3) { 
+    transform: rotate(180deg) translateX(300px) rotate(90deg); 
+}
+.text-orbit.outer span:nth-child(4) { 
+    transform: rotate(270deg) translateX(300px) rotate(90deg); 
+}
+
+/* --- Vòng trong (inner orbit) --- */
+/* Bán kính 210px (nhỏ hơn), 4 cụm từ */
+.text-orbit.inner span:nth-child(1) { 
+    transform: rotate(0deg) translateX(210px) rotate(90deg); 
+    font-size: 0.9em;
+}
+.text-orbit.inner span:nth-child(2) { 
+    transform: rotate(90deg) translateX(210px) rotate(90deg); 
+    font-size: 0.9em;
+}
+.text-orbit.inner span:nth-child(3) { 
+    transform: rotate(180deg) translateX(210px) rotate(90deg); 
+    font-size: 0.9em;
+}
+.text-orbit.inner span:nth-child(4) { 
+    transform: rotate(270deg) translateX(210px) rotate(90deg); 
+    font-size: 0.9em;
+}
