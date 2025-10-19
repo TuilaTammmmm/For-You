@@ -1,28 +1,52 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cây Tình Yêu</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div class="hearts-container"></div>
-        
-        <div class="tree"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex@0.6.5/jscex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex-parser@0.6.5/jscex-parser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex-jit@0.6.6/jscex-jit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex-builderbase@0.6.5/jscex-builderbase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex-async@0.6.5/jscex-async.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jscex-async-powerpack@0.6.5/jscex-async-powerpack.min.js"></script>
 
-        <div class="message">
-            Tình yêu của chúng ta bắt đầu từ...
-        </div>
-        <div class="timer" id="timer">
-            Đang tải...
-        </div>
+
+
+
+
+
+
+
+<div id="main">
+  <div id="error">您使用的浏览器无法支持即将显示的内容，请换成谷歌(<a
+      href="https://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a
+      href="http://firefox.com.cn/download/">Firefox</a>)浏览器查看</div>
+  <div id="wrap">
+    <div id="text">
+      <div id="code">
+        <span class="say">Công chúa ở nơi xa của anh,</span><br>
+        <span class="say">Dù khoảng cách có xa đến đâu, anh vẫn muốn nắm tay em đi hết quãng đời này,</span><br>
+        <span class="say">Đến khi tóc hai đứa bạc trắng, rồi gọi video trêu nhau vì mặt ai cũng nhăn như con mèo cau có.</span><br>
+        <span class="say">Anh sẽ luôn dõi theo và trân trọng từng khoảnh khắc em tỏa sáng ở nơi ấy,</span>
+        <span class="say">và khi em mệt mỏi, anh sẽ gọi điện ngay để đặt lịch “cùng ăn lẩu online và nói xấu đời”.</span><br>
+        <span class="say">Niềm vui của em là mục tiêu cả đời anh theo đuổi,</span>
+        <span class="say">ngay cả khi không ở bên cạnh, anh vẫn muốn làm em cười mỗi ngày.</span><br>
+        <br>
+        <span class="say">Mỗi sáng, anh sẽ nhắn tin gọi em dậy bằng một chiếc meme ngớ ngẩn,</span>
+        <span class="say">nhưng nhớ phản hồi, kẻo anh sang tận nơi giành lại chăn thật đấy!</span><br>
+        <span class="say">Mỗi tối, anh sẽ gọi để chúc em ngủ ngon,</span>
+        <span class="say">miễn là em đừng cúp máy trước khi anh kịp nói “Anh nhớ em”.</span><br>
+        <br>
+        <span class="say">Anh chỉ mong một ngày được ở bên em trọn vẹn,</span>
+        <span class="say">để không phải yêu xa nữa mà yêu trong vòng tay thật chặt.</span><br>
+        <span class="say">Và khi hai ta đã thật già,</span>
+        <span class="say">sẽ ngồi trên ghế bập bênh cạnh nhau, xem răng giả của ai lung linh hơn trong nắng chiều.</span><br>
+        <br>
+        <span class="say">-- Yêu em, Hoàng tử của em.</span>
+      </div>
     </div>
-    
-    <script src="script.js"></script>
-</body>
-</html>
+    <div id="clock-box">
+      Hoàng tử và Công chúa đã bên nhau
+      <div id="clock"></div>
+    </div>
+    <canvas id="canvas" width="1100" height="680"></canvas>
+  </div>
+  <!-- Add your favorite background music if you want -->
+  <!-- <audio src="love.mp3" autoplay="autoplay"></audio> -->
+</div>
