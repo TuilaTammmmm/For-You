@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // == BẠN CHỈNH NGÀY KỶ NIỆM CỦA MÌNH Ở ĐÂY (Năm, Tháng-1, Ngày) ==
     // Ví dụ: 20 tháng 10 năm 2024 -> new Date(2024, 9, 20)
     // (Tháng trong JavaScript bắt đầu từ 0 (tháng 1) đến 11 (tháng 12))
-    const startDate = new Date(2023, 7, 4, 0, 0, 0); // 00:00 ngày 20/10/2024
+    const startDate = new Date(2023, 8, 4, 0, 0, 0); // 00:00 ngày 20/10/2024
     // ==========================================================
 
     // Danh sách các màu "lá tim"
